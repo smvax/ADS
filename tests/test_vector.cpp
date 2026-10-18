@@ -1,6 +1,7 @@
-//#include "pch.h"
+// Copyright 2024 Marina Usova
+
 #include <gtest/gtest.h>
-#include "vector.h"
+#include "../lib_vector/vector.h"
 
 TEST(ClassVector, can_create_with_default_constructor) {
     Vector<double> V1;

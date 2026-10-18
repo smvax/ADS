@@ -1,7 +1,7 @@
-//#include "pch.h"
-#include <gtest/gtest.h>
+// Copyright 2024 Marina Usova
 
-#include "memdata.h"
+#include <gtest/gtest.h>
+#include "../lib_vector/memdata.h"
 
 TEST(FunctionsForMemData, can_calculate_capacity) {
     int size1 = 16;
