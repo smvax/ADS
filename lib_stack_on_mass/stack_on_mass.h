@@ -15,9 +15,10 @@ class TStackOnMass {
 
   inline bool is_empty() const noexcept;
   inline bool is_full() const noexcept;
+  inline size_t size() const noexcept;
+  inline T& top();
   inline void push(const T&);
   inline T pop();
-  const T& top() const;
 };
 
 template <class T>
@@ -50,7 +51,17 @@ template <class T>
 inline bool TStackOnMass<T>::is_full() const noexcept {
   return _top == _size - 1;
 }
-
+template <class T>
+inline size_t TStackOnMass<T>::size() const noexcept {
+  return _size;
+}
+template <class T>
+inline T& TStackOnMass<T>::top() {
+  if (is_empty()) {
+    throw std::out_of_range("ERROR: Stack is empty! Can't get top!");
+  }
+  return _data[_top];
+}
 template <class T>
 inline void TStackOnMass<T>::push(const T& val) {
   if (is_full()) {
@@ -64,11 +75,4 @@ inline T TStackOnMass<T>::pop() {
     throw std::out_of_range("ERROR: Stack is empty, can't pop!");
   }
   return _data[_top--];
-}
-template <class T>
-const T& TStackOnMass<T>::top() const {
-  if (is_empty()) {
-    throw std::out_of_range("ERROR: Stack is empty! Can't get top!");
-  }
-  return _data[_top];
 }

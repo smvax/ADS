@@ -5,7 +5,7 @@
 
 #define EPSILON 0.000001
 
-TEST(TestEasyExampleLib, can_div) {
+TEST(TestEasyExample, can_div) {
   // Arrange
   int x = 10;
   int y = 2;
@@ -14,7 +14,7 @@ TEST(TestEasyExampleLib, can_div) {
   ASSERT_NO_THROW(division(x, y));
 }
 
-TEST(TestEasyExampleLib, can_div_correctly) {
+TEST(TestEasyExample, can_div_correctly) {
     // Arrange
     int x = 6;
     int y = 2;
@@ -27,7 +27,7 @@ TEST(TestEasyExampleLib, can_div_correctly) {
     EXPECT_EQ(expected_result, actual_result);
 }
 
-TEST(TestEasyExampleLib, can_div_correctly_with_remainder) {
+TEST(TestEasyExample, can_div_correctly_with_remainder) {
     // Arrange
     int x = 5;
     int y = 4;
@@ -40,7 +40,7 @@ TEST(TestEasyExampleLib, can_div_correctly_with_remainder) {
     EXPECT_NEAR(expected_result, actual_result, EPSILON);
 }
 
-TEST(TestEasyExampleLib, throw_when_try_div_by_zero) {
+TEST(TestEasyExample, throw_when_try_div_by_zero) {
   // Arrange
   int x = 10;
   int y = 0;
