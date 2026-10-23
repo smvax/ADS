@@ -1,5 +1,8 @@
 // Copyright 2024 Marina Usova
 
+#ifndef LIB_STACK_ON_MASS_STACK_ON_MASS_H_
+#define LIB_STACK_ON_MASS_STACK_ON_MASS_H_
+
 #include <stdexcept>
 
 template <class T>
@@ -9,7 +12,7 @@ class TStackOnMass {
   int _top;
 
  public:
-  TStackOnMass(size_t);
+  explicit TStackOnMass(size_t);
   TStackOnMass(const TStackOnMass&);
   ~TStackOnMass();
 
@@ -35,7 +38,7 @@ TStackOnMass<T>::TStackOnMass(const TStackOnMass& other)
     : _size(other._size), _top(other._top) {
   _data = new T[_size];
   for (size_t i = 0; i <= _top; ++i) {
-    _data[i] = other._data[i]; // Would not go if _top == -1
+    _data[i] = other._data[i];  // Would not go if _top == -1
   }
 }
 template <class T>
@@ -76,3 +79,5 @@ inline T TStackOnMass<T>::pop() {
   }
   return _data[_top--];
 }
+
+#endif  // LIB_STACK_ON_MASS_STACK_ON_MASS_H_

@@ -1,5 +1,8 @@
 // Copyright 2024 Marina Usova
 
+#ifndef LIB_QUEUE_ON_MASS_QUEUE_ON_MASS_H_
+#define LIB_QUEUE_ON_MASS_QUEUE_ON_MASS_H_
+
 #include <stdexcept>
 
 template <class T>
@@ -11,7 +14,7 @@ class TQueueOnMass {
   bool _is_empty;
 
  public:
-  TQueueOnMass(size_t);
+  explicit TQueueOnMass(size_t);
   TQueueOnMass(const TQueueOnMass&);
   ~TQueueOnMass();
 
@@ -88,3 +91,5 @@ inline T TQueueOnMass<T>::pop() {
   }
   return val;
 }
+
+#endif  // LIB_QUEUE_ON_MASS_QUEUE_ON_MASS_H_
