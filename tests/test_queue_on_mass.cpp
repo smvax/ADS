@@ -92,7 +92,7 @@ TEST(ClassQueueOnMass, can_throw_when_push_in_full) {
   q.push(2);
 
   ASSERT_THROW(q.push(3), std::overflow_error);
-  
+
   EXPECT_EQ(q.size(), 2);
   EXPECT_FALSE(q.is_empty());
   EXPECT_TRUE(q.is_full());

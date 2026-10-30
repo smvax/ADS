@@ -1,11 +1,12 @@
 // Copyright 2024 Marina Usova
 
-//#define EASY_EXAMPLE
+#include <iostream>
+#include <iomanip>
+
+// #define EASY_EXAMPLE
 #define ITERATOR
 #ifdef EASY_EXAMPLE
 
-#include <iostream>
-#include <iomanip>
 #include "../lib_algorithms/easy_example.h"
 
 int main() {
@@ -38,19 +39,17 @@ int main() {
 #endif  // EASY_EXAMPLE
 
 #ifdef ITERATOR
-#include <iostream>
+
 #include "../lib_vector/vector.h"
 
 int main() {
   TVector<int> my_vec(8);
   int val = 1;
 
-  // Заполнение вектора
   for (int val = 1; val <= 8; ++val) {
     my_vec.push_back(val);
   }
 
-  // Вывод вектора
   for (TVector<int>::const_iterator it = my_vec.begin(); it != my_vec.end();
        ++it) {
     std::cout << *it << " ";

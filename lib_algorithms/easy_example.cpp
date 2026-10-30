@@ -2,6 +2,7 @@
 
 #include <stdexcept>
 #include <cstring>
+#include <string>
 #include "../lib_algorithms/easy_example.h"
 #include "../lib_stack_on_mass/stack_on_mass.h"
 
@@ -25,16 +26,14 @@ bool check_brackets(std::string expression) {
       if (tmp_stack.pop() != '(') {
         return false;
       }
-    }
-    else if (c == ']') {
+    } else if (c == ']') {
       if (tmp_stack.is_empty()) {
         return false;
       }
       if (tmp_stack.pop() != '[') {
         return false;
       }
-    }
-    else if (c == '}') {
+    } else if (c == '}') {
       if (tmp_stack.is_empty()) {
         return false;
       }
@@ -44,4 +43,4 @@ bool check_brackets(std::string expression) {
     }
   }
   return tmp_stack.is_empty();
-};
+}

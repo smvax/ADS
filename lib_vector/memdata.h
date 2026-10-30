@@ -1,4 +1,8 @@
-#pragma once
+// Copyright 2024 Marina Usova
+
+#ifndef LIB_VECTOR_MEMDATA_H_
+#define LIB_VECTOR_MEMDATA_H_
+
 #include <cstdlib>  // для рандома
 #include <ctime>
 #include <initializer_list>
@@ -327,7 +331,4 @@ void quick_sort_recursive(T* data, int left, int right) {
   }
 }
 
-////инстанцирование шаблона (генерация объектного файла под определенный тд):
-// template class MemData<double>;
-// template void quick_sort(MemData<double>&);
-// template void shuffle(MemData<double>&);
+#endif  // LIB_VECTOR_MEMDATA_H_

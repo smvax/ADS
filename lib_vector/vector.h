@@ -1,4 +1,8 @@
-#pragma once
+// Copyright 2024 Marina Usova
+
+#ifndef LIB_VECTOR_VECTOR_H_
+#define LIB_VECTOR_VECTOR_H_
+
 #include <cstdlib>
 #include <iostream>
 
@@ -645,3 +649,5 @@ std::istream& operator>>(std::istream& in,
   vector = std::move(temp);
   return in;
 }
+
+#endif  // LIB_VECTOR_VECTOR_H
