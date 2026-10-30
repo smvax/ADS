@@ -1,0 +1,8 @@
+// Copyright 2024 Marina Usova
+
+#ifndef LIB_MULTISTACK_ON_MASS_MULTISTACK_ON_MASS_H_
+#define LIB_MULTISTACK_ON_MASS_MULTISTACK_ON_MASS_H_
+
+#include <stdexcept>
+
+#endif  // LIB_STACK_ON_MASS_STACK_ON_MASS_H_
