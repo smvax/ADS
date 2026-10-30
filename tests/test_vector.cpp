@@ -757,7 +757,7 @@ TEST(ClassVector, can_move_assigment) {
     }
 }
 
-TEST(ClassVector, StandardShrink) {
+TEST(ClassVector, can_standard_shrink) {
     TVector<double> v;
     v.push_back(1.0);
     v.push_back(2.0);
@@ -780,7 +780,7 @@ TEST(ClassVector, StandardShrink) {
     EXPECT_DOUBLE_EQ(v[2], 3.0);
 }
 
-TEST(ClassVector, ShrinkEmptyVector) {
+TEST(ClassVector, can_shrink_empty) {
     TVector<double> v;
 
     EXPECT_NO_THROW(v.shrink_to_fit());
@@ -791,7 +791,7 @@ TEST(ClassVector, ShrinkEmptyVector) {
     EXPECT_TRUE(actual_bytes > 0);
 }
 
-TEST(ClassVector, ShrinkShiftedRingBuffer) {
+TEST(ClassVector, can_shrink_shifted) {
     TVector<double> v;
 
     v.push_back(1.0);
@@ -817,3 +817,364 @@ TEST(ClassVector, ShrinkShiftedRingBuffer) {
     EXPECT_DOUBLE_EQ(v[2], 2.0);
 }
 
+TEST(ClassVector, throw_when_insert_out_of_range_in_empty_vector) {
+  TVector<double> v;
+
+  ASSERT_THROW(v.insert(99.0, 1), std::out_of_range);
+  ASSERT_THROW(v.insert_many(nullptr, 5, 2), std::out_of_range);
+}
+
+TEST(ClassVector, pop_front_many_reduces_size_to_zero_correctly) {
+  TVector<double> v({1.0, 2.0, 3.0});
+
+  ASSERT_NO_THROW(v.pop_front_many(3));
+  EXPECT_EQ(v.get_size(), 0);
+  EXPECT_TRUE(v.is_empty());
+}
+
+TEST(ClassVector, pop_back_many_reduces_size_to_zero_correctly) {
+  TVector<double> v({1.0, 2.0, 3.0});
+
+  ASSERT_NO_THROW(v.pop_back_many(3));
+  EXPECT_EQ(v.get_size(), 0);
+  EXPECT_TRUE(v.is_empty());
+}
+
+TEST(ClassVector, copy_constructor_preserves_internal_ring_buffer_indices) {
+  TVector<double> v;
+  for (int i = 0; i < 5; ++i) v.push_back(i);
+  v.pop_front();
+  v.pop_front();
+  size_t original_front_idx = v.get_front_idx();
+  size_t original_back_idx = v.get_back_idx();
+  TVector<double> copy_v(v);
+
+  EXPECT_EQ(copy_v.get_front_idx(), original_front_idx);
+  EXPECT_EQ(copy_v.get_back_idx(), original_back_idx);
+  EXPECT_EQ(copy_v.get_size(), v.get_size());
+}
+
+TEST(ClassVector, copy_assignment_preserves_internal_ring_buffer_indices) {
+  TVector<double> v;
+  for (int i = 0; i < 5; ++i) v.push_back(i);
+  v.pop_front();
+
+  TVector<double> copy_v;
+  copy_v = v;
+
+  EXPECT_EQ(copy_v.get_front_idx(), v.get_front_idx());
+  EXPECT_EQ(copy_v.get_back_idx(), v.get_back_idx());
+}
+
+TEST(ClassVector, can_insert_element_when_buffer_is_wrapped) {
+  TVector<int> v;
+  for (int i = 1; i <= 14; ++i) v.push_back(i);
+  for (int i = 0; i < 4; ++i) v.pop_front();
+  for (int i = 15; i <= 18; ++i) v.push_back(i);
+
+  EXPECT_GT(v.get_front_idx(), v.get_back_idx());
+
+  v.insert(999, 5);
+
+  EXPECT_EQ(v[5], 999);
+  EXPECT_EQ(v.get_size(), 15);
+}
+
+TEST(ClassVector, can_erase_element_when_buffer_is_wrapped) {
+  TVector<int> v;
+  for (int i = 1; i <= 14; ++i) v.push_back(i);
+  for (int i = 0; i < 4; ++i) v.pop_front();
+  for (int i = 15; i <= 18; ++i) v.push_back(i);
+
+  ASSERT_NO_THROW(v.erase(5));
+  EXPECT_EQ(v.get_size(), 13);
+}
+
+TEST(ClassVector, can_erase_many_elements_when_buffer_is_wrapped) {
+  TVector<int> v;
+  for (int i = 1; i <= 14; ++i) v.push_back(i);
+  for (int i = 0; i < 4; ++i) v.pop_front();
+  for (int i = 15; i <= 18; ++i) v.push_back(i);
+
+  ASSERT_NO_THROW(v.erase_many(4, 3));
+  EXPECT_EQ(v.get_size(), 11);
+}
+
+TEST(ClassVector, friend_quick_sort_shifted) {
+  TVector<int> v;
+  v.push_back(10);
+  v.push_back(1);
+  v.push_back(5);
+  v.pop_front();
+  v.push_back(2);
+  quick_sort(v);
+
+  EXPECT_EQ(v.get_front_idx(), 0);
+  EXPECT_EQ(v.get_back_idx(), v.get_size() - 1);
+  EXPECT_EQ(v[0], 1);
+  EXPECT_EQ(v[1], 2);
+  EXPECT_EQ(v[2], 5);
+}
+
+TEST(ClassIterator, can_get_begin_and_end_for_empty_vector) {
+  TVector<int> v;
+
+  EXPECT_EQ(v.begin(), v.end());
+}
+
+TEST(ClassIterator, can_get_cbegin_and_cend_for_empty_vector) {
+  TVector<int> v;
+
+  EXPECT_EQ(v.cbegin(), v.cend());
+}
+
+TEST(ClassIterator, can_traverse_linear_vector) {
+  TVector<int> v;
+  for (int i = 1; i <= 5; ++i) v.push_back(i);
+  int count = 0;
+  for (TVector<int>::iterator it = v.begin(); it != v.end(); ++it) count++;
+
+  EXPECT_EQ(count, 5);
+}
+
+TEST(ClassIterator, can_read_linear_vector) {
+  TVector<int> v;
+  for (int i = 1; i <= 5; ++i) v.push_back(i);
+  int expected = 1;
+
+  for (TVector<int>::iterator it = v.begin(); it != v.end(); ++it) {
+    EXPECT_EQ(*it, expected);
+    expected++;
+  }
+}
+
+TEST(ClassIterator, can_modify_elements_through_iterator) {
+  TVector<int> v;
+  v.push_back(10);
+  v.push_back(20);
+  TVector<int>::iterator it = v.begin();
+  *it = 99;
+
+  EXPECT_EQ(v[0], 99);
+}
+
+TEST(ClassIterator, const_iterator_defines_correctly) {
+  TVector<int> v({1, 2, 3});
+  const TVector<int>& const_v = v;
+  int expected = 1;
+
+  for (TVector<int>::const_iterator it = const_v.begin(); it != const_v.end();
+       ++it) {
+    EXPECT_EQ(*it, expected);
+    expected++;
+  }
+}
+
+TEST(ClassIterator, can_convert_iterator_to_const_iterator) {
+  TVector<int> v({10, 20});
+  TVector<int>::iterator non_const_it = v.begin();
+  TVector<int>::const_iterator const_it = non_const_it;
+
+  EXPECT_EQ(*const_it, 10);
+}
+
+TEST(ClassIterator, can_use_postfix_increment) {
+  TVector<int> v({10, 20, 30});
+  TVector<int>::iterator it = v.begin();
+  TVector<int>::iterator post_inc = it++;
+
+  EXPECT_EQ(*post_inc, 10);
+  EXPECT_EQ(*it, 20);
+}
+
+TEST(ClassIterator, can_use_prefix_increment) {
+  TVector<int> v({10, 20, 30});
+  TVector<int>::iterator it = v.begin();
+  ++it;
+  TVector<int>::iterator pre_inc = ++it;
+
+  EXPECT_EQ(*pre_inc, 30);
+  EXPECT_EQ(*it, 30);
+}
+
+TEST(ClassIterator, can_use_postfix_decrement) {
+  TVector<int> v({10, 20, 30});
+  TVector<int>::iterator it = v.begin() + 2;
+  TVector<int>::iterator post_dec = it--;
+
+  EXPECT_EQ(*post_dec, 30);
+  EXPECT_EQ(*it, 20);
+}
+
+TEST(ClassIterator, can_use_prefix_decrement) {
+  TVector<int> v({10, 20, 30});
+  TVector<int>::iterator it = v.begin() + 2;
+  TVector<int>::iterator pre_dec = --it;
+
+  EXPECT_EQ(*pre_dec, 20);
+  EXPECT_EQ(*it, 20);
+}
+
+TEST(ClassIterator, assignment_operator_works_correctly) {
+  TVector<int> v({10, 20});
+  TVector<int>::iterator it1 = v.begin();
+  TVector<int>::iterator it2;
+  it2 = it1;
+
+  EXPECT_TRUE(it1 == it2);
+  EXPECT_EQ(*it2, 10);
+}
+
+TEST(ClassIterator, binary_plus_does_not_corrupt_original_iterator) {
+  TVector<int> v({1, 2, 3, 4, 5});
+  TVector<int>::iterator original = v.begin();
+  TVector<int>::iterator moved = original + 3;
+
+  EXPECT_EQ(*moved, 4);
+  EXPECT_EQ(*original, 1);
+  EXPECT_NE(original, moved);
+}
+
+TEST(ClassIterator, binary_minus_does_not_corrupt_original_iterator) {
+  TVector<int> v({1, 2, 3, 4, 5});
+  TVector<int>::iterator original = v.begin() + 3;
+  TVector<int>::iterator moved = original - 2;
+
+  EXPECT_EQ(*moved, 2);
+  EXPECT_EQ(*original, 4);
+  EXPECT_NE(original, moved);
+}
+
+TEST(ClassIterator, operator_plus_assignment_modifies_iterator_safely) {
+  TVector<int> v({1, 2, 3, 4, 5});
+  TVector<int>::iterator it = v.begin();
+  it += 4;
+
+  EXPECT_EQ(*it, 5);
+}
+
+TEST(ClassIterator, operator_minus_assignment_modifies_iterator_safely) {
+  TVector<int> v({1, 2, 3, 4, 5});
+  TVector<int>::iterator it = v.begin() + 4;
+  it -= 3;
+
+  EXPECT_EQ(*it, 2);
+}
+
+TEST(ClassIterator, can_traverse_correctly_when_buffer_is_wrapped) {
+  TVector<int> v;
+  for (int i = 1; i <= 14; ++i) v.push_back(i);
+  for (int i = 0; i < 5; ++i) v.pop_front();
+  for (int i = 15; i <= 19; ++i) v.push_back(i);
+
+  EXPECT_EQ(v.get_size(), 14);
+  EXPECT_GT(v.get_front_idx(), v.get_back_idx());
+
+  int expected_value = 6;
+  int count = 0;
+
+  for (TVector<int>::iterator it = v.begin(); it != v.end(); ++it) {
+    EXPECT_EQ(*it, expected_value);
+    expected_value++;
+    count++;
+  }
+  EXPECT_EQ(count, 14);
+}
+
+TEST(ClassIterator, arithmetic_plus_assignment_works_across_wrap_boundary) {
+  TVector<int> v;
+  for (int i = 1; i <= 14; ++i) v.push_back(i);
+  v.pop_front();
+  v.pop_front();
+  v.push_back(15);
+  v.push_back(16);
+  TVector<int>::iterator it = v.begin();
+
+  ASSERT_NO_THROW(it += 13);
+  EXPECT_EQ(*it, 16);
+}
+
+TEST(ClassIterator, arithmetic_minus_assignment_works_across_wrap_boundary) {
+  TVector<int> v;
+  for (int i = 1; i <= 14; ++i) v.push_back(i);
+  v.pop_front();
+  v.pop_front();
+  v.push_back(15);
+  v.push_back(16);
+  TVector<int>::iterator it = v.begin();
+  it += 13;
+  ASSERT_NO_THROW(it -= 13);
+  EXPECT_EQ(*it, 3);
+}
+
+TEST(ClassIterator,
+     binary_plus_and_minus_work_across_wrap_boundary_without_corruption) {
+  TVector<int> v;
+  for (int i = 1; i <= 14; ++i) v.push_back(i);
+  v.pop_front();
+  v.pop_front();
+  v.push_back(15);
+  v.push_back(16);
+  TVector<int>::iterator start = v.begin();
+  TVector<int>::iterator end_it = start + 13;
+  TVector<int>::iterator back_it = end_it - 13;
+
+  EXPECT_EQ(*end_it, 16);
+  EXPECT_EQ(*back_it, 3);
+  EXPECT_EQ(*start, 3);
+}
+
+TEST(ClassIterator, can_chain_plus_assignment_operators) {
+  TVector<int> v({1, 2, 3, 4, 5});
+  TVector<int>::iterator it = v.begin();
+  (it += 1) += 2;
+
+  EXPECT_EQ(*it, 4);
+}
+
+TEST(ClassIterator, can_chain_minus_assignment_operators) {
+  TVector<int> v({1, 2, 3, 4, 5});
+  TVector<int>::iterator it = v.begin() + 4;
+  (it -= 2) -= 1;
+
+  EXPECT_EQ(*it, 2);
+}
+
+TEST(ClassIterator, can_mix_prefix_increment_and_plus_assignment_in_chain) {
+  TVector<int> v({1, 2, 3, 4, 5});
+  TVector<int>::iterator it = v.begin();
+  ++(it += 2);
+
+  EXPECT_EQ(*it, 4);
+}
+
+TEST(ClassIterator, can_mix_prefix_decrement_and_minus_assignment_in_chain) {
+  TVector<int> v({1, 2, 3, 4, 5});
+  TVector<int>::iterator it = v.begin() + 4;
+  --(it -= 2);
+
+  EXPECT_EQ(*it, 2);
+}
+
+TEST(ClassIterator, can_chain_assignment_and_prefix_increment) {
+  TVector<int> v({10, 20, 30});
+  TVector<int>::iterator it1 = v.begin();
+  TVector<int>::iterator it2;
+  ++(it2 = it1);
+
+  EXPECT_EQ(*it2, 20);
+  EXPECT_EQ(*it1, 10);
+}
+
+TEST(ClassIterator, chained_operators_work_correctly_across_wrap_boundary) {
+  TVector<int> v;
+  for (int i = 1; i <= 14; ++i) v.push_back(i);
+  v.pop_front();
+  v.pop_front();
+  v.push_back(15);
+  v.push_back(16);
+  TVector<int>::iterator it = v.begin();
+  (it += 5) += 8;
+
+  EXPECT_EQ(*it, 16);
+}

@@ -82,6 +82,140 @@ class TVector {
   template <typename T>
   friend void shuffle(TVector<T>&);  // перемешивания (Фишер-Йетса)
 
+  // ИТЕРАТОР
+
+  template <typename Type>
+  class Iterator {
+    Type* _p_start;       // Указатель на начало физического массива (_mem._data)
+    Type* _p_cur;         // Текущий указатель на элемент
+    size_t _capacity;     // Вместимость массива
+    size_t _front_idx;    // Физический индекс начала вектора
+    size_t _logical_pos;  // Логическая позиция (от 0 до size)
+
+   public:
+    Iterator()
+        : _p_start(nullptr),
+          _p_cur(nullptr),
+          _capacity(0),
+          _front_idx(0),
+          _logical_pos(0) {}
+    Iterator(Type* start, size_t capacity, size_t front_idx, size_t logical_pos)
+        : _p_start(start),
+          _capacity(capacity),
+          _front_idx(front_idx),
+          _logical_pos(logical_pos) {
+      update_ptr();
+    }
+    template <typename OtherType>
+    Iterator(const Iterator<OtherType>& other)
+        : _p_start(other.get_start_pointer()),
+          _capacity(other.get_capacity()),
+          _front_idx(other.get_front_idx()),
+          _logical_pos(other.get_logical_pos()) {
+      update_ptr();
+    }
+
+    inline Type* get_start_pointer() const noexcept { return _p_start; }
+    inline size_t get_capacity() const noexcept { return _capacity; }
+    inline size_t get_front_idx() const noexcept { return _front_idx; }
+    inline size_t get_logical_pos() const noexcept { return _logical_pos; }
+
+    inline bool operator==(const Iterator& other) const noexcept {
+      return _p_start == other._p_start && _logical_pos == other._logical_pos;
+    }
+    inline bool operator!=(const Iterator& other) const noexcept {
+      return !(*this == other);
+    }
+
+    inline Type& operator*() const noexcept { return *_p_cur; }
+    Iterator& operator++() noexcept {
+      _logical_pos++;
+      update_ptr();
+      return *this;
+    }
+    Iterator operator++(int) {
+      Iterator temp = *this;
+      _logical_pos++;
+      update_ptr();
+      return temp;
+    }
+    Iterator& operator--() {
+      _logical_pos--;
+      update_ptr();
+      return *this;
+    }
+    Iterator operator--(int) {
+      Iterator temp = *this;
+      _logical_pos--;
+      update_ptr();
+      return temp;
+    }
+    Iterator& operator=(const Iterator& other) {
+      if (this != &other) {
+        _p_start = other._p_start;
+        _capacity = other._capacity;
+        _front_idx = other._front_idx;
+        _logical_pos = other._logical_pos;
+        _p_cur = other._p_cur;
+      }
+      return *this;
+    }
+    Iterator& operator+=(int n) {
+      _logical_pos += n;
+      update_ptr();
+      return *this;
+    }
+    Iterator& operator-=(int n) {
+      _logical_pos -= n;
+      update_ptr();
+      return *this;
+    }
+    Iterator operator+(int n) const {
+      Iterator temp = *this;
+      return temp += n;
+    }
+    Iterator operator-(int n) const {
+      Iterator temp = *this;
+      return temp -= n;
+    }
+
+    private:
+    // Вспомогательный метод для обновления p_cur на основе логической позиции
+    void update_ptr() {
+      if (_capacity == 0) {
+        _p_cur = nullptr;
+      } else {
+        size_t phys_idx = (_front_idx + _logical_pos) % _capacity;
+        _p_cur = _p_start + phys_idx;
+      }
+    }
+  };
+
+  typedef Iterator<T> iterator;
+  typedef Iterator<const T> const_iterator;
+
+  inline iterator begin() noexcept {
+    return iterator(_mem.get_data_changeable(), _mem.get_capacity(), _front, 0);
+  }
+  inline iterator end() noexcept {
+    return iterator(_mem.get_data_changeable(), _mem.get_capacity(), _front,
+                    _mem.get_size());
+  }
+  inline const_iterator begin() const noexcept {
+    return const_iterator(_mem.get_data_const(), _mem.get_capacity(), _front, 0);
+  }
+  inline const_iterator end() const noexcept {
+    return const_iterator(_mem.get_data_const(), _mem.get_capacity(), _front,
+                          _mem.get_size());
+  }
+  inline const_iterator cbegin() const noexcept {
+    return const_iterator(_mem.get_data_const(), _mem.get_capacity(), _front, 0);
+  }
+  inline const_iterator cend() const noexcept {
+    return const_iterator(_mem.get_data_const(), _mem.get_capacity(), _front,
+                          _mem.get_size());
+  }
+
  private:
   // служебный метод получения (геттер) физического индекса по относительному
   inline size_t get_mem_index(size_t i) const;
@@ -174,11 +308,7 @@ TVector<T>::TVector(size_t size) {
   TMemData<T> temp(size);
   _mem = (std::move(temp));
   _front = 0;
-  if (size > 0) {
-    _back = size - 1;
-  } else {
-    _back = 0;
-  }
+  _back = 0;
 }
 template <typename T>
 TVector<T>::TVector(std::initializer_list<T> list) {
@@ -470,15 +600,23 @@ T& TVector<T>::operator[](size_t i) noexcept {
 // сортировки и перемешивания
 template <typename T>
 void quick_sort(TVector<T>& vector) {
-  quick_sort(vector._mem);
+  if (vector._mem.get_size() <= 1) {
+    return;
+  }
+  vector._mem.reset_memory(vector._mem.get_size(), vector._front);
   vector._front = 0;
-  vector._back = vector._mem._size - 1;
+  vector._back = vector._mem.get_size() - 1;
+  quick_sort(vector._mem);
 }
 template <typename T>
 void shuffle(TVector<T>& vector) {
-  shuffle(vector._mem);
+  if (vector._mem.get_size() <= 1) {
+    return;
+  }
+  vector._mem.reset_memory(vector._mem.get_size(), vector._front);
   vector._front = 0;
-  vector._back = vector._mem._size - 1;
+  vector._back = vector._mem.get_size() - 1;
+  shuffle(vector._mem);
 }
 // перегрузки ввода-вывода
 template <typename T>

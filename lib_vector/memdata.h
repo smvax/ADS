@@ -4,10 +4,10 @@
 #include <initializer_list>
 #include <iostream>
 #include <sstream>  // дл€ std::istringstream
-#include <string>   // дл€ std::getline
+#include <string>  // дл€ std::getline
+#include <random>
 
-#define MEM_STEP \
-  15  // шаг: сколько выдел€етс€ €чеек пам€ти минимум при добавлении эл-тов
+#define MEM_STEP 15  // шаг: сколько выдел€етс€ €чеек пам€ти минимум при добавлении эл-тов
 
 template <typename T>
 class TVector;
@@ -37,8 +37,7 @@ class TMemData {
   inline const T* const get_data_const()
       const noexcept;  // хранилища (возвр указ-ль по которому Ќ≈Ћ№«я мен€ть)
   inline T* const
-  get_data_changeable() noexcept;  // хранилища (возвр указ-ль по которому ћќ∆Ќќ
-                                   // мен€ть)
+  get_data_changeable() noexcept;  // хранилища (возвр указ-ль по которому ћќ∆Ќќ мен€ть)
 
   // сеттеры пам€ти и размера заполненной части
   void set_memory(size_t) noexcept;  // установка пам€ти без сохранени€ данных
@@ -293,9 +292,11 @@ void shuffle(TMemData<T>& md) {  // перемешивание ‘ишер-…етса
   if (md._size <= 1) {
     return;
   }
-  srand(time(NULL));
+  static std::random_device rd;
+  static std::mt19937 gen(rd());
   for (size_t i = md._size - 1; i > 0; i--) {
-    size_t j = rand() % (i + 1);
+    std::uniform_int_distribution<size_t> dist(0, i);
+    size_t j = dist(gen);
     std::swap(md._data[i], md._data[j]);
   }
 }
