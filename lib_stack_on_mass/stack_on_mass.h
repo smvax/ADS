@@ -1,4 +1,4 @@
-// Copyright 2024 Marina Usova
+// Copyright 2026 smvax
 
 #ifndef LIB_STACK_ON_MASS_STACK_ON_MASS_H_
 #define LIB_STACK_ON_MASS_STACK_ON_MASS_H_

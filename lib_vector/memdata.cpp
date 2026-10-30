@@ -1,3 +1,3 @@
-// Copyright 2024 Marina Usova
+// Copyright 2026 smvax
 
 #include "../lib_vector/memdata.h"

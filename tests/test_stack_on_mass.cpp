@@ -1,4 +1,4 @@
-// Copyright 2024 Marina Usova
+// Copyright 2026 smvax
 
 #include <gtest/gtest.h>
 #include "../lib_stack_on_mass/stack_on_mass.h"

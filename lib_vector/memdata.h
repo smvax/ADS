@@ -1,4 +1,4 @@
-// Copyright 2024 Marina Usova
+// Copyright 2026 smvax
 
 #ifndef LIB_VECTOR_MEMDATA_H_
 #define LIB_VECTOR_MEMDATA_H_

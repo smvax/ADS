@@ -1,4 +1,4 @@
-// Copyright 2024 Marina Usova
+// Copyright 2026 smvax
 
 #ifndef LIB_QUEUE_ON_MASS_QUEUE_ON_MASS_H_
 #define LIB_QUEUE_ON_MASS_QUEUE_ON_MASS_H_

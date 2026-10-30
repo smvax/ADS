@@ -1,4 +1,4 @@
-// Copyright 2024 Marina Usova
+// Copyright 2026 smvax
 
 #ifndef LIB_ALGORITHMS_EASY_EXAMPLE_H_
 #define LIB_ALGORITHMS_EASY_EXAMPLE_H_
