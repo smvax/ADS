@@ -4,16 +4,16 @@
 #include "../lib_vector/vector.h"
 
 TEST(ClassVector, can_create_with_default_constructor) {
-    Vector<double> V1;
+    TVector<double> V1;
 
     EXPECT_EQ(V1.get_size(), 0);
     EXPECT_EQ(V1.get_capacity(), MEM_STEP);
 }
 
 TEST(ClassVector, can_create_with_constructor_by_size) {
-    Vector<double> V1(10);
-    Vector<double> V2(0);
-    Vector<double> V3(1000);
+    TVector<double> V1(10);
+    TVector<double> V2(0);
+    TVector<double> V3(1000);
 
     EXPECT_EQ(V1.get_size(), 0);
     EXPECT_EQ(V1.get_capacity(), MEM_STEP);
@@ -24,8 +24,8 @@ TEST(ClassVector, can_create_with_constructor_by_size) {
 }
 
 TEST(ClassVector, can_create_with_constructor_by_initializer_list) {
-    Vector<double> V1({ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 });
-    Vector<double> V2({});
+    TVector<double> V1({ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 });
+    TVector<double> V2({});
     double example1[16] = { 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 };
 
     EXPECT_EQ(V1.get_size(), 16);
@@ -42,7 +42,7 @@ TEST(ClassVector, can_create_with_init_constructor) {
     for (int i = 0; i < 16; i++) {
         list1[i] = i;
     }
-    Vector<double> V1(list1, 16);
+    TVector<double> V1(list1, 16);
 
     EXPECT_EQ(V1.get_size(), 16);
     EXPECT_EQ(V1.get_capacity(), MEM_STEP * 2);
@@ -52,8 +52,8 @@ TEST(ClassVector, can_create_with_init_constructor) {
 }
 
 TEST(ClassVector, can_create_with_copy_constructor) {
-    Vector<double> V1({ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 });
-    Vector<double> V2(V1);
+    TVector<double> V1({ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 });
+    TVector<double> V2(V1);
     double example1[16] = { 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 };
 
     EXPECT_EQ(V1.get_size(), V2.get_size(), 16);
@@ -67,9 +67,9 @@ TEST(ClassVector, can_create_with_copy_constructor) {
 }
 
 TEST(ClassVector, can_create_with_move_constructor) {
-    Vector<double> V1({ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 });
+    TVector<double> V1({ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 });
     const double* old_V1_data_ptr = V1.get_mem_original().get_data_const();
-    Vector<double> V2(std::move(V1));
+    TVector<double> V2(std::move(V1));
 
     EXPECT_NE(V1.get_mem_original().get_data_const(), old_V1_data_ptr);
     EXPECT_EQ(V1.get_mem_original().get_data_const(), nullptr);
@@ -77,11 +77,11 @@ TEST(ClassVector, can_create_with_move_constructor) {
 }
 
 TEST(ClassVector, can_is_empty) {
-    Vector<double> V1;
-    Vector<double> V2(0);
-    Vector<double> V3(1);
-    Vector<double> V4({ 1,2,3 });
-    Vector<double> V5({ 1,2,3,0 });
+    TVector<double> V1;
+    TVector<double> V2(0);
+    TVector<double> V3(1);
+    TVector<double> V4({ 1,2,3 });
+    TVector<double> V5({ 1,2,3,0 });
     double* list1 = new double[3];
     list1[0] = 1;
     list1[1] = 2;
@@ -90,8 +90,8 @@ TEST(ClassVector, can_is_empty) {
     list2[0] = 4;
     list2[1] = 5;
     list2[2] = 6;
-    Vector<double> V6(list1, 3);
-    Vector<double> V7(list2, 3);
+    TVector<double> V6(list1, 3);
+    TVector<double> V7(list2, 3);
 
     EXPECT_TRUE(V1.is_empty());
     EXPECT_TRUE(V2.is_empty());
@@ -105,62 +105,62 @@ TEST(ClassVector, can_is_empty) {
 //TEST(ClassVector, can_is_full) { //убрали тест как и у MemData<double>
 
 TEST(ClassVector, can_get_front) {
-    Vector<double> V1({ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 });
-    Vector<double> V2({ 1000,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 });
+    TVector<double> V1({ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 });
+    TVector<double> V2({ 1000,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 });
     EXPECT_DOUBLE_EQ(V1.get_front(), 1);
     EXPECT_DOUBLE_EQ(V2.get_front(), 1000);
 }
 
 TEST(ClassVector, can_get_back) {
-    Vector<double> V1({ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 });
-    Vector<double> V2({ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,19000 });
+    TVector<double> V1({ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 });
+    TVector<double> V2({ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,19000 });
     EXPECT_DOUBLE_EQ(V1.get_back(), 16);
     EXPECT_DOUBLE_EQ(V2.get_back(), 19000);
 }
 
 TEST(ClassVector, can_set_front) {
-    Vector<double> V1({ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 });
+    TVector<double> V1({ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 });
     EXPECT_DOUBLE_EQ(V1.get_front(), 1);
     V1.front_ref() = 11;
     EXPECT_DOUBLE_EQ(V1.get_front(), 11);
 }
 
 TEST(ClassVector, can_set_back) {
-    Vector<double> V1({ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 });
+    TVector<double> V1({ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 });
     EXPECT_DOUBLE_EQ(V1.get_back(), 16);
     V1.back_ref() = 13;
     EXPECT_DOUBLE_EQ(V1.get_back(), 13);
 }
 
 TEST(ClassVector, throw_when_try_get_front_in_empty_vector) {
-    Vector<double> V1;
+    TVector<double> V1;
     ASSERT_THROW(V1.get_front(), std::logic_error);
 }
 
 TEST(ClassVector, throw_when_try_get_back_in_empty_vector) {
-    Vector<double> V1;
+    TVector<double> V1;
     ASSERT_THROW(V1.get_back(), std::logic_error);
 }
 
 TEST(ClassVector, throw_when_try_set_front_in_empty_vector) {
-    Vector<double> V1;
+    TVector<double> V1;
     ASSERT_THROW(V1.front_ref() = 1, std::logic_error);
 }
 
 TEST(ClassVector, throw_when_try_set_back_in_empty_vector) {
-    Vector<double> V1;
+    TVector<double> V1;
     ASSERT_THROW(V1.back_ref() = 1, std::logic_error);
 }
 
 TEST(ClassVector, can_output_with_operator_cout) {
-    Vector<double> vec({ 1, 2, 3, 4, 5, 6, 7, 8, 9 });
+    TVector<double> vec({ 1, 2, 3, 4, 5, 6, 7, 8, 9 });
     std::stringstream out;
     out << vec;
     EXPECT_EQ("{ 1, 2, 3, 4, 5, 6, 7, 8, 9 }", out.str());
 }
 
 TEST(ClassVector, can_input_with_operator_cin) {
-    Vector<double> vec;
+    TVector<double> vec;
     std::stringstream in("9 1 2 3 4 5 6 7 8 9");
     in >> vec;
 
@@ -173,7 +173,7 @@ TEST(ClassVector, can_input_with_operator_cin) {
 }
 
 TEST(ClassVector, can_push_front) {
-    Vector<double> vec({ 44, 5, 7, 8 });
+    TVector<double> vec({ 44, 5, 7, 8 });
     std::stringstream out;
     for (size_t i = 0; i < 4; i++) {
         vec.push_front(3 - i);
@@ -185,7 +185,7 @@ TEST(ClassVector, can_push_front) {
 }
 
 TEST(ClassVector, can_push_front_many) {
-    Vector<double> vec({ 44, 5, 7, 8 });
+    TVector<double> vec({ 44, 5, 7, 8 });
     std::stringstream out;
     double list[6] = { 0,1,2,3,4,5 };
     vec.push_front_many(list, 4);
@@ -196,7 +196,7 @@ TEST(ClassVector, can_push_front_many) {
 }
 
 TEST(ClassVector, can_push_front_in_empty_vector) {
-    Vector<double> vec;
+    TVector<double> vec;
     std::stringstream out;
     EXPECT_EQ(0, vec.get_size());
     EXPECT_EQ(15, vec.get_capacity());
@@ -210,7 +210,7 @@ TEST(ClassVector, can_push_front_in_empty_vector) {
 }
 
 TEST(ClassVector, can_push_front_many_in_empty_vector) {
-    Vector<double> vec;
+    TVector<double> vec;
     std::stringstream out;
     double list[6] = { 0,1,2,3,4,5 };
     vec.push_front_many(list, 4);
@@ -221,7 +221,7 @@ TEST(ClassVector, can_push_front_many_in_empty_vector) {
 }
 
 TEST(ClassVector, can_push_front_with_reallocation) {
-    Vector<double> vec({ 1,2,3,4,5,6,7,8,9,10,11,12,13,14 });
+    TVector<double> vec({ 1,2,3,4,5,6,7,8,9,10,11,12,13,14 });
     std::stringstream out;
     EXPECT_EQ(14, vec.get_size());
     EXPECT_EQ(15, vec.get_capacity());
@@ -235,7 +235,7 @@ TEST(ClassVector, can_push_front_with_reallocation) {
 }
 
 TEST(ClassVector, can_push_front_many_with_reallocation) {
-    Vector<double> vec({ 1,2,3,4,5,6,7,8,9,10,11,12,13,14 });
+    TVector<double> vec({ 1,2,3,4,5,6,7,8,9,10,11,12,13,14 });
     std::stringstream out;
     EXPECT_EQ(14, vec.get_size());
     EXPECT_EQ(15, vec.get_capacity());
@@ -248,7 +248,7 @@ TEST(ClassVector, can_push_front_many_with_reallocation) {
 }
 
 TEST(ClassVector, can_push_back) {
-    Vector<double> vec({ 44, 5, 7, 8 });
+    TVector<double> vec({ 44, 5, 7, 8 });
     std::stringstream out;
     for (size_t i = 0; i < 4; i++) {
         vec.push_back(3 - i);
@@ -260,7 +260,7 @@ TEST(ClassVector, can_push_back) {
 }
 
 TEST(ClassVector, can_push_back_many) {
-    Vector<double> vec({ 44, 5, 7, 8 });
+    TVector<double> vec({ 44, 5, 7, 8 });
     std::stringstream out;
     double list[6] = { 0,1,2,3,4,5 };
     vec.push_back_many(list, 4);
@@ -271,7 +271,7 @@ TEST(ClassVector, can_push_back_many) {
 }
 
 TEST(ClassVector, can_push_back_in_empty_vector) {
-    Vector<double> vec;
+    TVector<double> vec;
     std::stringstream out;
     for (size_t i = 0; i < 4; i++) {
         vec.push_back(3 - i);
@@ -283,7 +283,7 @@ TEST(ClassVector, can_push_back_in_empty_vector) {
 }
 
 TEST(ClassVector, can_push_back_many_in_empty_vector) {
-    Vector<double> vec;
+    TVector<double> vec;
     std::stringstream out;
     double list[6] = { 0,1,2,3,4,5 };
     vec.push_back_many(list, 4);
@@ -294,7 +294,7 @@ TEST(ClassVector, can_push_back_many_in_empty_vector) {
 }
 
 TEST(ClassVector, can_push_back_with_reallocation) {
-    Vector<double> vec({ 1,2,3,4,5,6,7,8,9,10,11,12,13,14 });
+    TVector<double> vec({ 1,2,3,4,5,6,7,8,9,10,11,12,13,14 });
     std::stringstream out;
     EXPECT_EQ(14, vec.get_size());
     EXPECT_EQ(15, vec.get_capacity());
@@ -308,7 +308,7 @@ TEST(ClassVector, can_push_back_with_reallocation) {
 }
 
 TEST(ClassVector, can_push_back_many_with_reallocation) {
-    Vector<double> vec({ 1,2,3,4,5,6,7,8,9,10,11,12,13,14 });
+    TVector<double> vec({ 1,2,3,4,5,6,7,8,9,10,11,12,13,14 });
     std::stringstream out;
     EXPECT_EQ(14, vec.get_size());
     EXPECT_EQ(15, vec.get_capacity());
@@ -321,7 +321,7 @@ TEST(ClassVector, can_push_back_many_with_reallocation) {
 }
 
 TEST(ClassVector, can_insert) {
-    Vector<double> vec({ 1,2,3,4,5 });
+    TVector<double> vec({ 1,2,3,4,5 });
     std::stringstream out;
     vec.insert(99, 2);
     out << vec;
@@ -331,7 +331,7 @@ TEST(ClassVector, can_insert) {
 }
 
 TEST(ClassVector, can_insert_many) {
-    Vector<double> vec({ 1,2,3,4,5 });
+    TVector<double> vec({ 1,2,3,4,5 });
     std::stringstream out;
     double list[3] = { 99, 100, 101 };
     vec.insert_many(list, 3, 2);
@@ -342,7 +342,7 @@ TEST(ClassVector, can_insert_many) {
 }
 
 TEST(ClassVector, can_insert_with_reallocation) {
-    Vector<double> vec({ 1,2,3,4,5,6,7,8,9,10,11,12,13,14 });
+    TVector<double> vec({ 1,2,3,4,5,6,7,8,9,10,11,12,13,14 });
     std::stringstream out;
     EXPECT_EQ(14, vec.get_size());
     EXPECT_EQ(15, vec.get_capacity());
@@ -354,7 +354,7 @@ TEST(ClassVector, can_insert_with_reallocation) {
 }
 
 TEST(ClassVector, can_insert_many_with_reallocation) {
-    Vector<double> vec({ 1,2,3,4,5,6,7,8,9,10,11,12,13,14 });
+    TVector<double> vec({ 1,2,3,4,5,6,7,8,9,10,11,12,13,14 });
     std::stringstream out;
     EXPECT_EQ(14, vec.get_size());
     EXPECT_EQ(15, vec.get_capacity());
@@ -367,7 +367,7 @@ TEST(ClassVector, can_insert_many_with_reallocation) {
 }
 
 TEST(ClassVector, can_insert_to_front) {
-    Vector<double> vec({ 1,2,3,4,5 });
+    TVector<double> vec({ 1,2,3,4,5 });
     std::stringstream out;
     vec.insert(99, 0);
     out << vec;
@@ -377,7 +377,7 @@ TEST(ClassVector, can_insert_to_front) {
 }
 
 TEST(ClassVector, can_insert_many_to_front) {
-    Vector<double> vec({ 1,2,3,4,5 });
+    TVector<double> vec({ 1,2,3,4,5 });
     std::stringstream out;
     double list[3] = { 99, 100, 101 };
     vec.insert_many(list, 3, 0);
@@ -388,13 +388,13 @@ TEST(ClassVector, can_insert_many_to_front) {
 }
 
 TEST(ClassVector, throw_when_try_insert_with_wrong_position) {
-    Vector<double> vec({ 1,2,3,4,5 });
+    TVector<double> vec({ 1,2,3,4,5 });
     EXPECT_THROW(vec.insert(99, 10), std::out_of_range);
     EXPECT_THROW(vec.insert_many(nullptr, 3, 10), std::out_of_range);
 }
 
 TEST(ClassVector, can_pop_front) {
-    Vector<double> vec({ 1,2,3,4,5 });
+    TVector<double> vec({ 1,2,3,4,5 });
     std::stringstream out;
     vec.pop_front();
     out << vec;
@@ -404,7 +404,7 @@ TEST(ClassVector, can_pop_front) {
 }
 
 TEST(ClassVector, can_pop_front_many) {
-    Vector<double> vec({ 1,2,3,4,5 });
+    TVector<double> vec({ 1,2,3,4,5 });
     std::stringstream out;
     vec.pop_front_many(3);
     out << vec;
@@ -414,7 +414,7 @@ TEST(ClassVector, can_pop_front_many) {
 }
 
 TEST(ClassVector, can_pop_front_with_reallocation) {
-    Vector<double> vec({ 99,2,3,4,5,6,7,8,9,10,11,12,13,14,15 });
+    TVector<double> vec({ 99,2,3,4,5,6,7,8,9,10,11,12,13,14,15 });
     std::stringstream out;
     EXPECT_EQ(15, vec.get_size());
     EXPECT_EQ(30, vec.get_capacity());
@@ -426,7 +426,7 @@ TEST(ClassVector, can_pop_front_with_reallocation) {
 }
 
 TEST(ClassVector, can_pop_front_many_with_reallocation) {
-    Vector<double> vec({ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 });
+    TVector<double> vec({ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 });
     std::stringstream out;
     EXPECT_EQ(15, vec.get_size());
     EXPECT_EQ(30, vec.get_capacity());
@@ -438,17 +438,17 @@ TEST(ClassVector, can_pop_front_many_with_reallocation) {
 }
 
 TEST(ClassVector, throw_when_try_pop_front_from_empty_vector) {
-    Vector<double> vec;
+    TVector<double> vec;
     EXPECT_THROW(vec.pop_front(), std::logic_error);
 }
 
 TEST(ClassVector, throw_when_try_pop_front_many_from_empty_vector) {
-    Vector<double> vec;
+    TVector<double> vec;
     EXPECT_THROW(vec.pop_front_many(3), std::logic_error);
 }
 
 TEST(ClassVector, can_pop_back) {
-    Vector<double> vec({ 1,2,3,4,5 });
+    TVector<double> vec({ 1,2,3,4,5 });
     std::stringstream out;
     vec.pop_back();
     out << vec;
@@ -458,7 +458,7 @@ TEST(ClassVector, can_pop_back) {
 }
 
 TEST(ClassVector, can_pop_back_many) {
-    Vector<double> vec({ 1,2,3,4,5 });
+    TVector<double> vec({ 1,2,3,4,5 });
     std::stringstream out;
     vec.pop_back_many(3);
     out << vec;
@@ -468,7 +468,7 @@ TEST(ClassVector, can_pop_back_many) {
 }
 
 TEST(ClassVector, can_pop_back_with_reallocation) {
-    Vector<double> vec({ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 });
+    TVector<double> vec({ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 });
     std::stringstream out;
     EXPECT_EQ(15, vec.get_size());
     EXPECT_EQ(30, vec.get_capacity());
@@ -480,7 +480,7 @@ TEST(ClassVector, can_pop_back_with_reallocation) {
 }
 
 TEST(ClassVector, can_pop_back_many_with_reallocation) {
-    Vector<double> vec({ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 });
+    TVector<double> vec({ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 });
     std::stringstream out;
     EXPECT_EQ(16, vec.get_size());
     EXPECT_EQ(30, vec.get_capacity());
@@ -492,17 +492,17 @@ TEST(ClassVector, can_pop_back_many_with_reallocation) {
 }
 
 TEST(ClassVector, throw_when_try_pop_back_from_empty_vector) {
-    Vector<double> vec;
+    TVector<double> vec;
     EXPECT_THROW(vec.pop_back(), std::logic_error);
 }
 
 TEST(ClassVector, throw_when_try_pop_back_many_from_empty_vector) {
-    Vector<double> vec;
+    TVector<double> vec;
     EXPECT_THROW(vec.pop_back_many(3), std::logic_error);
 }
 
 TEST(ClassVector, can_correctly_recalc_back_in_area_of_zero) {
-    Vector<double> vec;
+    TVector<double> vec;
 
     for (size_t i = 0; i < 14; i++) {
         vec.push_back(i + 1);
@@ -531,7 +531,7 @@ TEST(ClassVector, can_correctly_recalc_back_in_area_of_zero) {
 }
 
 TEST(ClassVector, can_correctly_recalc_front_in_area_of_zero) {
-    Vector<double> vec;
+    TVector<double> vec;
 
     for (size_t i = 0; i < 14; i++) {
         vec.push_back(i + 1);
@@ -560,7 +560,7 @@ TEST(ClassVector, can_correctly_recalc_front_in_area_of_zero) {
 }
 
 TEST(ClassVector, can_erase) {
-    Vector<double> vec({ 1,2,3,4,5 });
+    TVector<double> vec({ 1,2,3,4,5 });
     std::stringstream out;
     vec.erase(2);
     out << vec;
@@ -570,7 +570,7 @@ TEST(ClassVector, can_erase) {
 }
 
 TEST(ClassVector, can_erase_many) {
-    Vector<double> vec({ 1,2,3,4,5,6,7,8 });
+    TVector<double> vec({ 1,2,3,4,5,6,7,8 });
     std::stringstream out;
     vec.erase_many(2, 3);
     out << vec;
@@ -580,7 +580,7 @@ TEST(ClassVector, can_erase_many) {
 }
 
 TEST(ClassVector, can_erase_front) {
-    Vector<double> vec({ 1,2,3,4,5 });
+    TVector<double> vec({ 1,2,3,4,5 });
     std::stringstream out;
     vec.erase(0);
     out << vec;
@@ -590,7 +590,7 @@ TEST(ClassVector, can_erase_front) {
 }
 
 TEST(ClassVector, can_erase_back) {
-    Vector<double> vec({ 1,2,3,4,5 });
+    TVector<double> vec({ 1,2,3,4,5 });
     std::stringstream out;
     vec.erase(4);
     out << vec;
@@ -600,7 +600,7 @@ TEST(ClassVector, can_erase_back) {
 }
 
 TEST(ClassVector, can_erase_with_reallocation) {
-    Vector<double> vec({ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 });
+    TVector<double> vec({ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 });
     std::stringstream out;
     EXPECT_EQ(15, vec.get_size());
     EXPECT_EQ(30, vec.get_capacity());
@@ -612,7 +612,7 @@ TEST(ClassVector, can_erase_with_reallocation) {
 }
 
 TEST(ClassVector, can_erase_many_with_reallocation) {
-    Vector<double> vec({ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 });
+    TVector<double> vec({ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 });
     std::stringstream out;
     EXPECT_EQ(16, vec.get_size());
     EXPECT_EQ(30, vec.get_capacity());
@@ -624,28 +624,28 @@ TEST(ClassVector, can_erase_many_with_reallocation) {
 }
 
 TEST(ClassVector, throw_when_try_erase_from_empty_vector) {
-    Vector<double> vec;
+    TVector<double> vec;
     EXPECT_THROW(vec.erase(0), std::logic_error);
 }
 
 TEST(ClassVector, throw_when_try_erase_many_from_empty_vector) {
-    Vector<double> vec;
+    TVector<double> vec;
     EXPECT_THROW(vec.erase_many(0, 3), std::logic_error);
 }
 
 TEST(ClassVector, throw_when_try_erase_with_wrong_position) {
-    Vector<double> vec({ 1,2,3,4,5 });
+    TVector<double> vec({ 1,2,3,4,5 });
     EXPECT_THROW(vec.erase(10), std::out_of_range);
 }
 
 TEST(ClassVector, throw_when_try_erase_many_with_wrong_count) {
-    Vector<double> vec({ 1,2,3,4,5 });
+    TVector<double> vec({ 1,2,3,4,5 });
     EXPECT_THROW(vec.erase_many(10, 2), std::logic_error);
     EXPECT_THROW(vec.erase_many(2, 10), std::logic_error);
 }
 
 TEST(ClassVector, combination_push_pop_insert_erase) {
-    Vector<double> vec({ 3, 44, 5, 7, 8 });
+    TVector<double> vec({ 3, 44, 5, 7, 8 });
 
     std::stringstream out;
     out << vec;
@@ -712,8 +712,8 @@ TEST(ClassVector, combination_push_pop_insert_erase) {
 }
 
 TEST(ClassVector, can_assigment) {
-    Vector<double> vec_1{ 1,2,3,4 };
-    Vector<double> vec_2;
+    TVector<double> vec_1{ 1,2,3,4 };
+    TVector<double> vec_2;
 
     vec_2 = vec_1;
 
@@ -733,8 +733,8 @@ TEST(ClassVector, can_assigment) {
 }
 
 TEST(ClassVector, can_move_assigment) {
-    Vector<double> vec_1;
-    Vector<double> vec_2;
+    TVector<double> vec_1;
+    TVector<double> vec_2;
 
     for (size_t i = 0; i < 4; i++) {
         vec_1.push_back(5 + i);
@@ -758,7 +758,7 @@ TEST(ClassVector, can_move_assigment) {
 }
 
 TEST(ClassVector, StandardShrink) {
-    Vector<double> v;
+    TVector<double> v;
     v.push_back(1.0);
     v.push_back(2.0);
     v.push_back(3.0);
@@ -781,7 +781,7 @@ TEST(ClassVector, StandardShrink) {
 }
 
 TEST(ClassVector, ShrinkEmptyVector) {
-    Vector<double> v;
+    TVector<double> v;
 
     EXPECT_NO_THROW(v.shrink_to_fit());
 
@@ -792,7 +792,7 @@ TEST(ClassVector, ShrinkEmptyVector) {
 }
 
 TEST(ClassVector, ShrinkShiftedRingBuffer) {
-    Vector<double> v;
+    TVector<double> v;
 
     v.push_back(1.0);
     v.push_back(2.0);
