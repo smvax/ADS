@@ -1,3 +1,3 @@
 // Copyright 2026 smvax
 
-#include "../lib_stack_on_mass/stack_on_mass.h"
+#include "../lib_multistack_on_mass/multistack_on_mass.h"

@@ -17,7 +17,7 @@ bool check_brackets(std::string expression) {
   TStackOnMass<char> tmp_stack(expression.size());
   for (char c : expression) {
     if (c == '(' || c == '[' || c == '{') {
-      tmp_stack.push(c);  
+      tmp_stack.push(c);
     }
     if (c == ')') {
       if (tmp_stack.is_empty()) {
